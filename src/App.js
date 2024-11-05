@@ -4,48 +4,72 @@ import "./App.css";
 import React from "react";
 
 function App() {
+  const [formData, setFormData] = React.useState({
+    name: "",
+    imageUrl: "",
+    price: "",
+  });
 
-  const [formData, setFormData] =React.useState({
-    email: "",
-    password: ""
-  })
+  const [submittedValue, setSubmittedValue] = React.useState("");
 
-  function handleOnchange(event) {
-      setFormData({
+  function handleOnChange(event) {
+    setFormData({
       ...formData,
       [event.target.name]: event.target.value,
-    })
+    });
   }
 
   function handleOnSubmit(event) {
     event.preventDefault();
-     if(isEmailValid(formData.email) && isPasswordValid(formData.password)){
-          console.log(formData);
-    }else{
-      console.log("Email or password is not valid")
-    }
-  }
 
-  function isEmailValid(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
-  }
-
-  function isPasswordValid(password) {
-    const regex = /^.{8,}$/;
-    return regex.test(password);
+    console.log(formData);
+    setSubmittedValue(previousData=>[...previousData,formData]);
   }
 
   return (
-    <form onSubmit={handleOnSubmit} className="p-4">
-      <p>email</p>
-      <input type="text" name="email" onChange={handleOnchange} />
-      <br />
-      <p>Password</p>
-      <input type="password" name="password" onChange={handleOnchange} />
-      <br />
-      <button type="submit">Login</button>
-    </form>
+    <>
+      <form onSubmit={handleOnSubmit} className="p-4">
+        <input
+          placeholder="Plant name"
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleOnChange}
+        />{" "}
+        <br />
+        <input
+          placeholder="imageUrl"
+          type="text"
+          name="imageUrl"
+          value={formData.imageUrl}
+          onChange={handleOnChange}
+        />{" "}
+        <br />
+        <input
+          placeholder="price"
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleOnChange}
+        />
+        <br />
+        <button type="submit">Add to cart</button>
+      </form>
+      {submittedValue.length > 0 && (
+        <div>
+          <h2>Added plants:</h2>
+          {submittedValue.map((data, index) => (
+            <ul key={index}>
+              {Object.entries(data).map(([key, value]) => (
+                <li key={key}>
+                  <strong>{key}:</strong> {value}
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
